@@ -17,6 +17,7 @@ class App extends Component {
     status: false,
     isVisible: false,
     count: 0,
+    perPage: 12,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -40,7 +41,7 @@ class App extends Component {
           this.setState(prevState => ({
             images: [...prevState.images, ...data.hits],
 
-            isVisible: page < Math.ceil(data.total / data.hits.length),
+            isVisible: page < Math.ceil(data.total / this.state.perPage),
           }));
         }
       })

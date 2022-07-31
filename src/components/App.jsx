@@ -16,33 +16,36 @@ class App extends Component {
     showModal: false,
     status: false,
     isVisible: false,
+    count: 0,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { query, page, images } = this.state;
+    const { query, page } = this.state;
 
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
       this.setState(prevState => ({ status: !prevState.status }));
-
-      imageAPI
-        .getImages(query, page)
-        .then(data => {
-          if (data.hits.length === 0) {
-            alert('Sorry. There are no images');
-          } else {
-            this.setState(prevState => ({
-              images: [...prevState.images, ...data.hits],
-              isVisible: page <= Math.ceil(data.total / images.length),
-            }));
-          }
-        })
-        // .then(data => console.log(data))
-        .then(this.setState(prevState => ({ status: !prevState.status })));
+      this.getPhotos(query, page);
     }
   }
+  getPhotos = (query, page) => {
+    imageAPI
+      .getImages(query, page)
+      .then(data => {
+        if (data.hits.length === 0) {
+          alert('Sorry. There are no images');
+        } else {
+          this.setState(prevState => ({
+            images: [...prevState.images, ...data.hits],
+
+            isVisible: page < Math.ceil(data.total / data.hits.length),
+          }));
+        }
+      })
+      .then(this.setState(prevState => ({ status: !prevState.status })));
+  };
 
   onFormInput = data => {
     this.setState({ query: data, images: [], page: 1 });

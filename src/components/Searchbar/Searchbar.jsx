@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../styles.css';
-
+//
 class Searchbar extends Component {
   state = {
     queryMessage: '',
